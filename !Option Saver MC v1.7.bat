@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver for Minecraft Java v1.6
+Title Option Saver for Minecraft Java v1.7
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -7,7 +7,7 @@ cd OptionSaverMC
 set optm=optionsmc.txt
 set optl=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 1.6]
+echo Option Saver for Minecraft Java [Version 1.7]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
@@ -102,6 +102,14 @@ echo OK!   hotbar %ver%.nbt
 echo MISSING!   hotbar %ver%.nbt
 )
 
+if exist "config %ver%" (
+rd ..\config /S /Q
+robocopy "config %ver%" "..\config" /MIR
+echo OK!   config %ver%
+) else (
+echo MISSING!   config %ver%
+)
+
 goto 1
 
 #
@@ -149,6 +157,14 @@ copy "hotbar %ver%.nbt" "..\hotbar.nbt"
 echo OK!   hotbar %ver%.nbt
 ) else (
 echo MISSING!   hotbar %ver%.nbt
+)
+
+if exist "config %ver%" (
+rd ..\config /S /Q
+robocopy "config %ver%" "..\config" /MIR
+echo OK!   config %ver%
+) else (
+echo MISSING!   config %ver%
 )
 
 goto 1
@@ -213,6 +229,13 @@ copy "..\hotbar.nbt" "hotbar %ver%.nbt"
 echo OK!   hotbar.nbt
 ) else (
 echo MISSING!   hotbar.nbt
+)
+
+if exist "..\config" (
+robocopy "..\config" "config %ver%"  /MIR
+echo OK!   config
+) else (
+echo MISSING!   config
 )
 
 goto 1
