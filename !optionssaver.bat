@@ -7,7 +7,7 @@ cd OptionSaverMC
 set optm=optionsmc.txt
 set optl=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 1.7]
+echo Option Saver for Minecraft Java [Version 1.8]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
