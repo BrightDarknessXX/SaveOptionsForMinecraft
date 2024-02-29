@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver for Minecraft Java v1.7
+Title Option Saver for Minecraft Java v1.8
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -104,7 +104,7 @@ echo MISSING!   hotbar %ver%.nbt
 
 if exist "config %ver%" (
 rd ..\config /S /Q
-robocopy "config %ver%" "..\config" /MIR
+robocopy "config %ver%" "..\config" /S
 echo OK!   config %ver%
 ) else (
 echo MISSING!   config %ver%
@@ -161,7 +161,7 @@ echo MISSING!   hotbar %ver%.nbt
 
 if exist "config %ver%" (
 rd ..\config /S /Q
-robocopy "config %ver%" "..\config" /MIR
+robocopy "config %ver%" "..\config" /S
 echo OK!   config %ver%
 ) else (
 echo MISSING!   config %ver%
@@ -232,7 +232,7 @@ echo MISSING!   hotbar.nbt
 )
 
 if exist "..\config" (
-robocopy "..\config" "config %ver%"  /MIR
+robocopy "..\config" "config %ver%" /S
 echo OK!   config
 ) else (
 echo MISSING!   config
