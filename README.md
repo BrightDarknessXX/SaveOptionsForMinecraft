@@ -8,4 +8,4 @@ options.txt
 optionsof.txt
 hotbar.nbt
 optionsshaders.txt
-config\
+\config
