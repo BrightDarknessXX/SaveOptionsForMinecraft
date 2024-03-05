@@ -179,7 +179,7 @@ del ..\optionsshaders.txt
 copy "optionsshaders %ver%.txt" "..\optionsshaders.txt"
 echo OK!   optionsshaders %ver%.txt
 echo OK!   optionsshaders.txt >> %optl%
-echo OK!   optionsof.txt >> %optm%
+echo OK!   optionsshaders.tx >> %optm%
 ) else (
 echo MISSING!   optionsshaders %ver%.txt
 echo MISSING!   optionsshaders.txt >> %optl%
@@ -271,7 +271,7 @@ echo MISSING!   optionsof.txt >> %optl%
 if exist "..\optionsshaders.txt" (
 copy "..\optionsshaders.txt" "optionsshaders %ver%.txt"
 echo OK!   optionsshaders.txt
-echo OK!   optionsof.txt >> %optl%
+echo OK!   optionsshaders.txt >> %optl%
 ) else (
 echo MISSING!   optionsshaders.txt
 echo MISSING!   optionsshaders.txt >> %optl%
