@@ -4,8 +4,8 @@ Title Option Saver v1.9 for Minecraft Java
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
 
-set mcloglast=optionsmclast.log
-set mclog=optionsmc.log
+set optm=optionsmc.txt
+set optl=optionsmc.log
 
 echo Option Saver for Minecraft Java [Version 1.9]
 echo by _BrightDarkness_
@@ -19,10 +19,11 @@ if /i "[%PV%]"=="[copy]" (goto copy)
 if /i "[%PV%]"=="[copy /NBTONLY]" (goto copyNBTONLY)
 if /i "[%PV%]"=="[paste]" (goto paste)
 if /i "[%PV%]"=="[paste /NBTONLY]" (goto pasteNBTONLY)
+if /i "[%PV%]"=="[paste /SHADER]" (goto pasteSHADER)
 if /i "[%PV%]"=="[log]" (goto log)
 if /i "[%PV%]"=="[help]" (goto help)
 if /i "[%PV%]"=="[clean]" (goto clean)
-if /i "[%PV%]"=="[list]" (echo. & dir /b & echo. & goto 1)
+if /i "[%PV%]"=="[list]" (echo. & dir & echo. & goto 1)
 if /i "[%PV%]"=="[x]" (exit)
 
 echo.
@@ -36,9 +37,10 @@ echo COPY [/NBTONLY]
 echo Saves options.
 echo -NBTONLY  Only copies the .NBT file.
 echo.
-echo PASTE [/NBTONLY]
+echo PASTE [/NBTONLY] [/SHADER]
 echo Loads options to use in Minecraft.
 echo -NBTONLY  Only pastes the .NBT file.
+echo -SHADER   Also pastes the shader options.
 echo.
 echo LOG
 echo Shows what you've pasted/copied in a log format.
@@ -60,8 +62,8 @@ goto 1
 REM Shows the log of what has been pasted or copied
 :log
 echo.
-if exist "%mclog%" (
-type %mclog%
+if exist "%optl%" (
+type %optl%
 ) else (
 Echo No log yet.
 )
@@ -73,53 +75,139 @@ REM Pastes the version you choose
 :paste
 echo.
 
-echo Your profiles:
-dir /b options*.txt
-echo.
-if exist "%mcloglast%" (
-type %mcloglast%
+if exist "%optm%" (
+type %optm%
 echo.
 )
 
 set /p ver=paste options for version:
-echo [%date% %time%] Last pasted version: %ver% > %mcloglast%
-echo [%date% %time%] Pasted %ver% >> %mclog%
+echo [%date% %time%] Last pasted version: %ver% > %optm%
+echo [%date% %time%] Pasted %ver% >> %optl%
 echo.
 
 if exist "options %ver%.txt" (
 del ..\options.txt
 copy "options %ver%.txt" "..\options.txt"
 echo OK!   options %ver%.txt
-echo OK!   options.txt >> %mclog%
-echo OK!   options.txt >> %mcloglast%
+echo OK!   options.txt >> %optl%
+echo OK!   options.txt >> %optm%
 ) else (
 echo MISSING!   options %ver%.tx
-echo MISSING!   options.txt >> %mclog%
-echo MISSING!   options.txt >> %mcloglast%
+echo MISSING!   options.txt >> %optl%
+echo MISSING!   options.txt >> %optm%
+)
+
+if exist "optionsof %ver%.txt" (
+del ..\optionsof.txt
+copy "optionsof %ver%.txt" "..\optionsof.txt"
+echo OK!   optionsof %ver%.txt
+echo OK!   optionsof.txt >> %optl%
+echo OK!   optionsof.txt >> %optm%
+) else (
+echo MISSING!   optionsof %ver%.txt
+echo MISSING!   optionsof.txt >> %optl%
+echo MISSING!   optionsof.txt >> %optm%
 )
 
 if exist "hotbar %ver%.nbt" (
 del ..\hotbar.nbt
 copy "hotbar %ver%.nbt" "..\hotbar.nbt"
 echo OK!   hotbar %ver%.nbt
-echo OK!   hotbar.nbt >> %mclog%
-echo OK!   hotbar.nbt >> %mcloglast%
+echo OK!   hotbar.nbt >> %optl%
+echo OK!   hotbar.nbt >> %optm%
 ) else (
 echo MISSING!   hotbar %ver%.nbt
-echo MISSING!   hotbar.nbt >> %mclog%
-echo MISSING!   hotbar.nbt >> %mcloglast%
+echo MISSING!   hotbar.nbt >> %optl%
+echo MISSING!   hotbar.nbt >> %optm%
 )
 
 if exist "config %ver%" (
 rd ..\config /S /Q
 robocopy "config %ver%" "..\config" /S
 echo OK!   config %ver%
-echo OK!   config >> %mclog%
-echo OK!   config >> %mcloglast%
+echo OK!   config >> %optl%
+echo OK!   config >> %optm%
 ) else (
 echo MISSING!   config %ver%
-echo MISSING!   config >> %mclog%
-echo MISSING!   config >> %mcloglast%
+echo MISSING!   config >> %optl%
+echo MISSING!   config >> %optm%
+)
+
+goto 1
+
+
+REM Pastes the version you choose, but also optionsshaders.txt
+:pasteSHADER
+echo.
+
+if exist "%optm%" (
+type %optm%
+echo.
+)
+
+set /p ver=paste options with shader included for version:
+echo [%date% %time%] Last pasted version: %ver% (SHADER OPT INCL) > %optm%
+echo [%date% %time%] Pasted %ver% (SHADER OPT INCL)>> %optl%
+echo.
+
+if exist "options %ver%.txt" (
+del ..\options.txt
+copy "options %ver%.txt" "..\options.txt"
+echo OK!   options %ver%.txt
+echo OK!   options.txt >> %optl%
+echo OK!   options.txt >> %optm%
+) else (
+echo MISSING!   options %ver%.tx
+echo MISSING!   options.txt >> %optl%
+echo MISSING!   options.txt >> %optm%
+)
+
+if exist "optionsof %ver%.txt" (
+del ..\optionsof.txt
+copy "optionsof %ver%.txt" "..\optionsof.txt"
+echo OK!   optionsof %ver%.txt
+echo OK!   optionsof.txt >> %optl%
+echo OK!   optionsof.txt >> %optm%
+) else (
+echo MISSING!   optionsof %ver%.txt
+echo MISSING!   optionsof.txt >> %optl%
+echo MISSING!   optionsof.txt >> %optm%
+)
+
+if exist "optionsshaders %ver%.txt" (
+del ..\optionsshaders.txt
+copy "optionsshaders %ver%.txt" "..\optionsshaders.txt"
+echo OK!   optionsshaders %ver%.txt
+echo OK!   optionsshaders.txt >> %optl%
+echo OK!   optionsshaders.tx >> %optm%
+) else (
+echo MISSING!   optionsshaders %ver%.txt
+echo MISSING!   optionsshaders.txt >> %optl%
+echo MISSING!   optionsshaders.txt >> %optm%
+)
+
+if exist "hotbar %ver%.nbt" (
+del ..\hotbar.nbt
+copy "hotbar %ver%.nbt" "..\hotbar.nbt"
+echo OK!   hotbar %ver%.nbt
+echo OK!   hotbar.nbt >> %optl%
+echo OK!   hotbar.nbt >> %optm%
+) else (
+echo MISSING!   hotbar %ver%.nbt
+echo MISSING!   hotbar.nbt >> %optl%
+echo MISSING!   hotbar.nbt >> %optm%
+)
+
+if exist "config %ver%" (
+rd ..\config /S /Q
+robocopy "config %ver%" "..\config" /S
+echo OK!   config %ver%
+echo OK!   config >> %optl%
+echo OK!   config >> %optm%
+) else (
+echo MISSING!   config %ver%
+echo MISSING!   config >> %optl%
+echo MISSING!   config >> %optm%
 )
 
 goto 1
@@ -129,29 +217,26 @@ REM Pastes the version you choose, but ONLY hotbar.nbt
 :pasteNBTONLY
 echo.
 
-echo Your profiles:
-dir /b hotbar*.nbt
-echo.
-if exist "%mcloglast%" (
-type %mcloglast%
+if exist "%optm%" (
+type %optm%
 echo.
 )
 
 set /p ver=paste NBT for version:
-echo [%date% %time%] Last pasted version: %ver% (NBTONLY) > %mcloglast%
-echo [%date% %time%] Pasted %ver% (NBTONLY) >> %mclog%
+echo [%date% %time%] Last pasted version: %ver% (NBTONLY) > %optm%
+echo [%date% %time%] Pasted %ver% (NBTONLY) >> %optl%
 echo.
 
 if exist "hotbar %ver%.nbt" (
 del ..\hotbar.nbt
 copy "hotbar %ver%.nbt" "..\hotbar.nbt"
 echo OK!   hotbar %ver%.nbt
-echo OK!   hotbar.nbt >> %mclog%
-echo OK!   hotbar.nbt >> %mcloglast%
+echo OK!   hotbar.nbt >> %optl%
+echo OK!   hotbar.nbt >> %optm%
 ) else (
 echo MISSING!   hotbar %ver%.nbt
-echo MISSING!   hotbar.nbt >> %mclog%
-echo MISSING!   hotbar.nbt >> %mcloglast%
+echo MISSING!   hotbar.nbt >> %optl%
+echo MISSING!   hotbar.nbt >> %optm%
 )
 
 goto 1
@@ -162,34 +247,52 @@ REM Saves the version to be restored when needed
 echo.
 
 set /p ver=copy options as version:
-echo [%date% %time%] Copied %ver% >> %mclog%
+echo [%date% %time%] Copied %ver% >> %optl%
 echo.
 
 if exist "..\options.txt" (
 copy "..\options.txt" "options %ver%.txt"
 echo OK!   options.txt
-echo OK!   options.txt >> %mclog%
+echo OK!   options.txt >> %optl%
 ) else (
 echo MISSING!   options.txt
-echo MISSING!   options.txt >> %mclog%
+echo MISSING!   options.txt >> %optl%
+)
+
+if exist "..\optionsof.txt" (
+copy "..\optionsof.txt" "optionsof %ver%.txt"
+echo OK!   optionsof.txt
+echo OK!   optionsof.txt >> %optl%
+) else (
+echo MISSING!   optionsof.txt
+echo MISSING!   optionsof.txt >> %optl%
+)
+
+if exist "..\optionsshaders.txt" (
+copy "..\optionsshaders.txt" "optionsshaders %ver%.txt"
+echo OK!   optionsshaders.txt
+echo OK!   optionsshaders.txt >> %optl%
+) else (
+echo MISSING!   optionsshaders.txt
+echo MISSING!   optionsshaders.txt >> %optl%
 )
 
 if exist "..\hotbar.nbt" (
 copy "..\hotbar.nbt" "hotbar %ver%.nbt"
 echo OK!   hotbar.nbt
-echo OK!   hotbar.nbt >> %mclog%
+echo OK!   hotbar.nbt >> %optl%
 ) else (
 echo MISSING!   hotbar.nbt
-echo MISSING!   hotbar.nbt >> %mclog%
+echo MISSING!   hotbar.nbt >> %optl%
 )
 
 if exist "..\config" (
 robocopy "..\config" "config %ver%" /S
 echo OK!   config
-echo OK!   config >> %mclog%
+echo OK!   config >> %optl%
 ) else (
 echo MISSING!   config
-echo MISSING!   config >> %mclog%
+echo MISSING!   config >> %optl%
 )
 
 goto 1
@@ -200,16 +303,16 @@ REM Copies the hotbar.nbt for the version given
 echo.
 
 set /p ver=copy NBT as version:
-echo [%date% %time%] Copied %ver% (NBTONLY) >> %mclog%
+echo [%date% %time%] Copied %ver% (NBTONLY) >> %optl%
 echo.
 
 if exist "..\hotbar.nbt" (
 copy "..\hotbar.nbt" "hotbar %ver%.nbt"
 echo OK!   hotbar.nbt
-echo OK!   hotbar.nbt >> %mclog%
+echo OK!   hotbar.nbt >> %optl%
 ) else (
 echo MISSING!   hotbar.nbt
-echo MISSING!   hotbar.nbt >> %mclog%
+echo MISSING!   hotbar.nbt >> %optl%
 )
 
 goto 1
@@ -222,31 +325,47 @@ echo Type 'CLEAN' to reset OptionSaverMC.
 echo.
 set /p ver=Delete version:
 if /i "[%ver%]"=="[CLEAN]" (goto reset)
-echo [%date% %time%] Deleted %ver% >> %mclog%
+echo [%date% %time%] Deleted %ver% >> %optl%
 echo.
 
 if exist "options %ver%.txt" (
 del "options %ver%.txt" /S /Q
-echo OK!   options.txt >> %mclog%
+echo OK!   options.txt >> %optl%
 ) else (
 echo MISSING!   options %ver%.txt
-echo MISSING!   options.txt >> %mclog%
+echo MISSING!   options.txt >> %optl%
+)
+
+if exist "optionsof %ver%.txt" (
+del "optionsof %ver%.txt" /S /Q
+echo OK!   optionsof.txt >> %optl%
+) else (
+echo MISSING!   optionsof %ver%.txt
+echo MISSING!   optionsof.txt >> %optl%
+)
+
+if exist "optionsshaders %ver%.txt" (
+del "optionsshaders %ver%.txt" /S /Q
+echo OK!   optionsshaders.txt >> %optl%
+) else (
+echo MISSING!   optionsshaders %ver%.txt
+echo MISSING!   optionsshaders.txt >> %optl%
 )
 
 if exist "hotbar %ver%.nbt" (
 del "hotbar %ver%.nbt" /S /Q
-echo OK!   hotbar.nbt >> %mclog%
+echo OK!   hotbar.nbt >> %optl%
 ) else (
 echo MISSING!   hotbar %ver%.nbt
-echo MISSING!   hotbar.nbt >> %mclog%
+echo MISSING!   hotbar.nbt >> %optl%
 )
 
 if exist "config %ver%" (
 rd "config %ver%" /S /Q
-echo OK!   config >> %mclog%
+echo OK!   config >> %optl%
 ) else (
 echo MISSING!   config %ver%
-echo MISSING!   config >> %mclog%
+echo MISSING!   config >> %optl%
 )
 
 goto 1
@@ -254,7 +373,7 @@ goto 1
 REM Resets OptionSaverMC
 :reset
 echo.
-dir /b
+dir
 echo.
 :resetERR
 set /p ver=Are you sure you want to delete all files listed above? (Y/N) : 
