@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver v1.9 for Minecraft Java 
+Title Option Saver v1.9.6 for Minecraft Java 
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -7,7 +7,7 @@ cd OptionSaverMC
 set mcloglast=optionsmclast.log
 set mclog=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 1.9]
+echo Option Saver for Minecraft Java [Version 1.9.6]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
@@ -15,10 +15,10 @@ echo (Help for help page)
 :1
 echo.
 set /p PV=
-if /i "[%PV%]"=="[copy]" (goto copy)
-if /i "[%PV%]"=="[copy /NBTONLY]" (goto copyNBTONLY)
-if /i "[%PV%]"=="[paste]" (goto paste)
-if /i "[%PV%]"=="[paste /NBTONLY]" (goto pasteNBTONLY)
+if /i "[%PV%]"=="[save]" (goto save)
+if /i "[%PV%]"=="[save /NBTONLY]" (goto saveNBTONLY)
+if /i "[%PV%]"=="[load]" (goto load)
+if /i "[%PV%]"=="[load /NBTONLY]" (goto loadNBTONLY)
 if /i "[%PV%]"=="[log]" (goto log)
 if /i "[%PV%]"=="[help]" (goto help)
 if /i "[%PV%]"=="[clean]" (goto clean)
@@ -32,16 +32,16 @@ goto 1
 REM HELP (self explanatory)
 :help
 echo.
-echo COPY [/NBTONLY]
+echo SAVE [/NBTONLY]
 echo Saves options.
 echo -NBTONLY  Only copies the .NBT file.
 echo.
-echo PASTE [/NBTONLY]
+echo LOAD [/NBTONLY]
 echo Loads options to use in Minecraft.
-echo -NBTONLY  Only pastes the .NBT file.
+echo -NBTONLY  Only loads the .NBT file.
 echo.
 echo LOG
-echo Shows what you've pasted/copied in a log format.
+echo Shows what you've loaded/saved in a log format.
 echo.
 echo CLEAN
 echo Deletes a save.
@@ -57,7 +57,7 @@ echo Exits the program.
 
 goto 1
 
-REM Shows the log of what has been pasted or copied
+REM Shows the log of what has been loaded or saved
 :log
 echo.
 if exist "%mclog%" (
@@ -70,7 +70,7 @@ goto 1
 
 
 REM Pastes the version you choose
-:paste
+:load
 echo.
 
 echo Your profiles:
@@ -81,9 +81,9 @@ type %mcloglast%
 echo.
 )
 
-set /p ver=paste options for version:
-echo [%date% %time%] Last pasted version: %ver% > %mcloglast%
-echo [%date% %time%] Pasted %ver% >> %mclog%
+set /p ver=Load options for version:
+echo [%date% %time%] Last loaded version: %ver% > %mcloglast%
+echo [%date% %time%] Loaded %ver% >> %mclog%
 echo.
 
 if exist "options %ver%.txt" (
@@ -126,7 +126,7 @@ goto 1
 
 
 REM Pastes the version you choose, but ONLY hotbar.nbt
-:pasteNBTONLY
+:loadNBTONLY
 echo.
 
 echo Your profiles:
@@ -137,9 +137,9 @@ type %mcloglast%
 echo.
 )
 
-set /p ver=paste NBT for version:
-echo [%date% %time%] Last pasted version: %ver% (NBTONLY) > %mcloglast%
-echo [%date% %time%] Pasted %ver% (NBTONLY) >> %mclog%
+set /p ver=Load NBT for version:
+echo [%date% %time%] Last loaded version: %ver% (NBTONLY) > %mcloglast%
+echo [%date% %time%] Loaded %ver% (NBTONLY) >> %mclog%
 echo.
 
 if exist "hotbar %ver%.nbt" (
@@ -158,11 +158,11 @@ goto 1
 
 
 REM Saves the version to be restored when needed
-:copy
+:save
 echo.
 
-set /p ver=copy options as version:
-echo [%date% %time%] Copied %ver% >> %mclog%
+set /p ver=Save options as version:
+echo [%date% %time%] Saved %ver% >> %mclog%
 echo.
 
 if exist "..\options.txt" (
@@ -196,11 +196,11 @@ goto 1
 
 
 REM Copies the hotbar.nbt for the version given
-:copyNBTONLY
+:saveNBTONLY
 echo.
 
-set /p ver=copy NBT as version:
-echo [%date% %time%] Copied %ver% (NBTONLY) >> %mclog%
+set /p ver=Save NBT as version:
+echo [%date% %time%] Saved %ver% (NBTONLY) >> %mclog%
 echo.
 
 if exist "..\hotbar.nbt" (
@@ -218,6 +218,11 @@ goto 1
 REM Delete an entry
 :clean
 echo.
+
+echo Your profiles:
+dir /b options*.txt
+echo.
+
 echo Type 'CLEAN' to reset OptionSaverMC.
 echo.
 set /p ver=Delete version:
@@ -250,6 +255,7 @@ echo MISSING!   config >> %mclog%
 )
 
 goto 1
+
 
 REM Resets OptionSaverMC
 :reset
