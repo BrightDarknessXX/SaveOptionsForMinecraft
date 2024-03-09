@@ -112,7 +112,7 @@ echo MISSING!   hotbar.nbt >> %mcloglast%
 
 if exist "config %ver%" (
 rd ..\config /S /Q
-robocopy "config %ver%" "..\config" /S
+robocopy "config %ver%" "..\config" /MIR
 echo OK!   config %ver%
 echo OK!   config >> %mclog%
 echo OK!   config >> %mcloglast%
@@ -184,7 +184,7 @@ echo MISSING!   hotbar.nbt >> %mclog%
 )
 
 if exist "..\config" (
-robocopy "..\config" "config %ver%" /S
+robocopy "..\config" "config %ver%" /MIR
 echo OK!   config
 echo OK!   config >> %mclog%
 ) else (
