@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver v1.9.6 for Minecraft Java 
+Title Option Saver v2.0 for Minecraft Java 
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -17,8 +17,10 @@ echo.
 set /p PV=
 if /i "[%PV%]"=="[save]" (goto save)
 if /i "[%PV%]"=="[save /NBTONLY]" (goto saveNBTONLY)
+if /i "[%PV%]"=="[save /MODONLY]" (goto saveMODONLY)
 if /i "[%PV%]"=="[load]" (goto load)
 if /i "[%PV%]"=="[load /NBTONLY]" (goto loadNBTONLY)
+if /i "[%PV%]"=="[load /MODONLY]" (goto loadMODONLY)
 if /i "[%PV%]"=="[log]" (goto log)
 if /i "[%PV%]"=="[help]" (goto help)
 if /i "[%PV%]"=="[clean]" (goto clean)
@@ -32,13 +34,15 @@ goto 1
 REM HELP (self explanatory)
 :help
 echo.
-echo SAVE [/NBTONLY]
+echo SAVE [/NBTONLY] [/MODONLY]
 echo Saves options.
 echo -NBTONLY  Only copies the .NBT file.
+echo -MODONLY  Only copies the mod folder.
 echo.
-echo LOAD [/NBTONLY]
+echo LOAD [/NBTONLY] [/MODONLY]
 echo Loads options to use in Minecraft.
 echo -NBTONLY  Only loads the .NBT file.
+echo -MODONLY  Only loads the mod folder.
 echo.
 echo LOG
 echo Shows what you've loaded/saved in a log format.
@@ -93,7 +97,7 @@ echo OK!   options %ver%.txt
 echo OK!   options.txt >> %mclog%
 echo OK!   options.txt >> %mcloglast%
 ) else (
-echo MISSING!   options %ver%.tx
+echo MISSING!   options %ver%.txt
 echo MISSING!   options.txt >> %mclog%
 echo MISSING!   options.txt >> %mcloglast%
 )
@@ -120,6 +124,18 @@ echo OK!   config >> %mcloglast%
 echo MISSING!   config %ver%
 echo MISSING!   config >> %mclog%
 echo MISSING!   config >> %mcloglast%
+)
+
+if exist "mods %ver%" (
+rd ..\mods /S /Q
+robocopy "mods %ver%" "..\mods" /MIR
+echo OK!   mods %ver%
+echo OK!   mods >> %mclog%
+echo OK!   mods >> %mcloglast%
+) else (
+echo MISSING!   mods %ver%
+echo MISSING!   mods >> %mclog%
+echo MISSING!   mods >> %mcloglast%
 )
 
 goto 1
@@ -152,6 +168,38 @@ echo OK!   hotbar.nbt >> %mcloglast%
 echo MISSING!   hotbar %ver%.nbt
 echo MISSING!   hotbar.nbt >> %mclog%
 echo MISSING!   hotbar.nbt >> %mcloglast%
+)
+
+goto 1
+
+
+REM Pastes the version you choose, but ONLY the mods folder
+:loadMODONLY
+echo.
+
+echo Your profiles:
+dir /b mods*
+echo.
+if exist "%mcloglast%" (
+type %mcloglast%
+echo.
+)
+
+set /p ver=Load MODS for version:
+echo [%date% %time%] Last loaded version: %ver% (MODS) > %mcloglast%
+echo [%date% %time%] Loaded %ver% (MODS) >> %mclog%
+echo.
+
+if exist "mods %ver%" (
+rd ..\mods /S /Q
+robocopy "mods %ver%" "..\mods" /MIR
+echo OK!   mods %ver%
+echo OK!   mods >> %mclog%
+echo OK!   mods >> %mcloglast%
+) else (
+echo MISSING!   mods %ver%
+echo MISSING!   mods >> %mclog%
+echo MISSING!   mods >> %mcloglast%
 )
 
 goto 1
@@ -192,6 +240,15 @@ echo MISSING!   config
 echo MISSING!   config >> %mclog%
 )
 
+if exist "..\mods" (
+robocopy "..\mods" "mods %ver%" /MIR
+echo OK!   mods
+echo OK!   mods >> %mclog%
+) else (
+echo MISSING!   mods
+echo MISSING!   mods >> %mclog%
+)
+
 goto 1
 
 
@@ -215,12 +272,32 @@ echo MISSING!   hotbar.nbt >> %mclog%
 goto 1
 
 
+REM Copies the mods folder for the version given
+:saveMODONLY
+echo.
+
+set /p ver=Save MODS as version:
+echo [%date% %time%] Saved %ver% (MODS) >> %mclog%
+echo.
+
+if exist "..\mods" (
+robocopy "..\mods" "mods %ver%" /MIR
+echo OK!   mods
+echo OK!   mods >> %mclog%
+) else (
+echo MISSING!   mods
+echo MISSING!   mods >> %mclog%
+)
+
+goto 1
+
+
 REM Delete an entry
 :clean
 echo.
 
 echo Your profiles:
-dir /b options*.txt
+dir /b
 echo.
 
 echo Type 'CLEAN' to reset OptionSaverMC.
@@ -231,27 +308,39 @@ echo [%date% %time%] Deleted %ver% >> %mclog%
 echo.
 
 if exist "options %ver%.txt" (
-del "options %ver%.txt" /S /Q
-echo OK!   options.txt >> %mclog%
+del "options %ver%.txt" /S /Q >nul
+echo DELETED!   options %ver%.txt
+echo DELETED!   options.txt >> %mclog%
 ) else (
 echo MISSING!   options %ver%.txt
 echo MISSING!   options.txt >> %mclog%
 )
 
 if exist "hotbar %ver%.nbt" (
-del "hotbar %ver%.nbt" /S /Q
-echo OK!   hotbar.nbt >> %mclog%
+del "hotbar %ver%.nbt" /S /Q >nul
+echo DELETED!   hotbar %ver%.nbt
+echo DELETED!   hotbar.nbt >> %mclog%
 ) else (
 echo MISSING!   hotbar %ver%.nbt
 echo MISSING!   hotbar.nbt >> %mclog%
 )
 
 if exist "config %ver%" (
-rd "config %ver%" /S /Q
-echo OK!   config >> %mclog%
+rd "config %ver%" /S /Q >nul
+echo DELETED!   config %ver%
+echo DELETED!   config >> %mclog%
 ) else (
 echo MISSING!   config %ver%
 echo MISSING!   config >> %mclog%
+)
+
+if exist "mods %ver%" (
+rd "mods %ver%" /S /Q >nul
+echo DELETED!   mods %ver%
+echo DELETED!   mods >> %mclog%
+) else (
+echo MISSING!   mods %ver%
+echo MISSING!   mods >> %mclog%
 )
 
 goto 1
