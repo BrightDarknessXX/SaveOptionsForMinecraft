@@ -7,7 +7,7 @@ cd OptionSaverMC
 set mcloglast=optionsmclast.log
 set mclog=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 1.9.6]
+echo Option Saver for Minecraft Java [Version 2.0]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
