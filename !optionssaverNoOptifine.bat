@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver v2.0 for Minecraft Java 
+Title Option Saver v2.1 for Minecraft Java 
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -7,7 +7,7 @@ cd OptionSaverMC
 set mcloglast=optionsmclast.log
 set mclog=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 2.0]
+echo Option Saver for Minecraft Java [Version 2.1]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
@@ -15,23 +15,24 @@ echo (Help for help page)
 :1
 echo.
 set /p PV=
-if /i "[%PV%]"=="[save]" (goto save)
-if /i "[%PV%]"=="[save /NBTONLY]" (goto saveNBTONLY)
-if /i "[%PV%]"=="[save /MODONLY]" (goto saveMODONLY)
-if /i "[%PV%]"=="[load]" (goto load)
-if /i "[%PV%]"=="[load /NBTONLY]" (goto loadNBTONLY)
-if /i "[%PV%]"=="[load /MODONLY]" (goto loadMODONLY)
-if /i "[%PV%]"=="[log]" (goto log)
-if /i "[%PV%]"=="[help]" (goto help)
-if /i "[%PV%]"=="[clean]" (goto clean)
-if /i "[%PV%]"=="[list]" (echo. & dir /b & echo. & goto 1)
-if /i "[%PV%]"=="[x]" (exit)
+if /i "%PV%"=="save" (goto save)
+if /i "%PV%"=="save /NBTONLY" (goto saveNBTONLY)
+if /i "%PV%"=="save /MODONLY" (goto saveMODONLY)
+if /i "%PV%"=="load" (goto load)
+if /i "%PV%"=="load /NBTONLY" (goto loadNBTONLY)
+if /i "%PV%"=="load /MODONLY" (goto loadMODONLY)
+if /i "%PV%"=="log" (goto log)
+if /i "%PV%"=="help" (goto help)
+if /i "%PV%"=="clean" (goto clean)
+if /i "%PV%"=="clear" (goto clear)
+if /i "%PV%"=="list" (echo. & dir /b & echo. & goto 1)
+if /i "%PV%"=="x" (exit)
 
 echo.
 echo %PV% is no option.
 goto 1
 
-REM HELP (self explanatory)
+:: HELP (self explanatory)
 :help
 echo.
 echo SAVE [/NBTONLY] [/MODONLY]
@@ -50,6 +51,9 @@ echo.
 echo CLEAN
 echo Deletes a save.
 echo.
+echo CLEAR
+echo Empties folders: mods, config
+echo.
 echo LIST
 echo Lists the OptionSaverMC folder.
 echo.
@@ -61,7 +65,7 @@ echo Exits the program.
 
 goto 1
 
-REM Shows the log of what has been loaded or saved
+:: Shows the log of what has been loaded or saved
 :log
 echo.
 if exist "%mclog%" (
@@ -73,7 +77,7 @@ Echo No log yet.
 goto 1
 
 
-REM Pastes the version you choose
+:: Pastes the version you choose
 :load
 echo.
 
@@ -141,7 +145,7 @@ echo MISSING!   mods >> %mcloglast%
 goto 1
 
 
-REM Pastes the version you choose, but ONLY hotbar.nbt
+:: Pastes the version you choose, but ONLY hotbar.nbt
 :loadNBTONLY
 echo.
 
@@ -173,7 +177,7 @@ echo MISSING!   hotbar.nbt >> %mcloglast%
 goto 1
 
 
-REM Pastes the version you choose, but ONLY the mods folder
+:: Pastes the version you choose, but ONLY the mods folder
 :loadMODONLY
 echo.
 
@@ -205,7 +209,7 @@ echo MISSING!   mods >> %mcloglast%
 goto 1
 
 
-REM Saves the version to be restored when needed
+:: Saves the version to be restored when needed
 :save
 echo.
 
@@ -252,7 +256,7 @@ echo MISSING!   mods >> %mclog%
 goto 1
 
 
-REM Copies the hotbar.nbt for the version given
+:: Copies the hotbar.nbt for the version given
 :saveNBTONLY
 echo.
 
@@ -272,7 +276,7 @@ echo MISSING!   hotbar.nbt >> %mclog%
 goto 1
 
 
-REM Copies the mods folder for the version given
+:: Copies the mods folder for the version given
 :saveMODONLY
 echo.
 
@@ -292,7 +296,7 @@ echo MISSING!   mods >> %mclog%
 goto 1
 
 
-REM Delete an entry
+:: Delete an entry
 :clean
 echo.
 
@@ -345,8 +349,24 @@ echo MISSING!   mods >> %mclog%
 
 goto 1
 
+:: Empties mods and config folder
+:clear
+echo.
+set /p clear=Clear mods and config folder? (Y/N) : 
+if /i "%clear%"=="Y" (
+    for %%a in ("..\mods" "..\config") do (rd /S /Q "%%~a")
+    md "..\mods" "..\config"
+    echo [%date% %time%] Cleared mods and config folder. >> %mclog%
+    goto 1
+)
+if /i not "%clear%"=="N" (
+    echo Input was neither Y nor N.
+    goto clear
+)
 
-REM Resets OptionSaverMC
+goto 1
+
+:: Resets OptionSaverMC
 :reset
 echo.
 dir /b
