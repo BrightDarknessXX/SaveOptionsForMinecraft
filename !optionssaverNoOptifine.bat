@@ -355,6 +355,7 @@ echo.
 set /p clear=Clear mods and config folder? (Y/N) : 
 if /i "%clear%"=="Y" (
     for %%a in ("..\mods" "..\config") do (rd /S /Q "%%~a")
+    timeout /T 2 /nobreak>nul
     md "..\mods" "..\config"
     echo [%date% %time%] Cleared mods and config folder. >> %mclog%
     goto 1
