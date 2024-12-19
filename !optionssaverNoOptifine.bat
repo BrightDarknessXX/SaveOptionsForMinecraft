@@ -1,5 +1,5 @@
 @echo off
-Title Option Saver v2.1 for Minecraft Java 
+Title Option Saver v2.2 for Minecraft Java 
 
 if not exist "OptionSaverMC" (md OptionSaverMC)
 cd OptionSaverMC
@@ -7,7 +7,7 @@ cd OptionSaverMC
 set mcloglast=optionsmclast.log
 set mclog=optionsmc.log
 
-echo Option Saver for Minecraft Java [Version 2.1]
+echo Option Saver for Minecraft Java [Version 2.2]
 echo by _BrightDarkness_
 Echo.
 echo (Help for help page)
@@ -18,9 +18,10 @@ set /p PV=
 if /i "%PV%"=="save" (goto save)
 if /i "%PV%"=="save /NBTONLY" (goto saveNBTONLY)
 if /i "%PV%"=="save /MODONLY" (goto saveMODONLY)
+if /i "%PV%"=="save /RESONLY" (goto saveRESONLY)
 if /i "%PV%"=="load" (goto load)
 if /i "%PV%"=="load /NBTONLY" (goto loadNBTONLY)
-if /i "%PV%"=="load /MODONLY" (goto loadMODONLY)
+if /i "%PV%"=="load /RESONLY" (goto loadRESONLY)
 if /i "%PV%"=="log" (goto log)
 if /i "%PV%"=="help" (goto help)
 if /i "%PV%"=="clean" (goto clean)
@@ -39,11 +40,13 @@ echo SAVE [/NBTONLY] [/MODONLY]
 echo Saves options.
 echo -NBTONLY  Only copies the .NBT file.
 echo -MODONLY  Only copies the mod folder.
+echo -RESONLY  Only copies the resourcepacks folder.
 echo.
-echo LOAD [/NBTONLY] [/MODONLY]
+echo LOAD [/NBTONLY] [/MODONLY] [/RESONLY]
 echo Loads options to use in Minecraft.
 echo -NBTONLY  Only loads the .NBT file.
 echo -MODONLY  Only loads the mod folder.
+echo -RESONLY  Only loads the resourcepacks folder.
 echo.
 echo LOG
 echo Shows what you've loaded/saved in a log format.
@@ -52,7 +55,7 @@ echo CLEAN
 echo Deletes a save.
 echo.
 echo CLEAR
-echo Empties folders: mods, config
+echo Empties folders: mods, config, resourcepacks
 echo.
 echo LIST
 echo Lists the OptionSaverMC folder.
@@ -142,6 +145,18 @@ echo MISSING!   mods >> %mclog%
 echo MISSING!   mods >> %mcloglast%
 )
 
+if exist "resourcepacks %ver%" (
+rd ..\resourcepacks /S /Q
+robocopy "resourcepacks %ver%" "..\resourcepacks" /MIR
+echo OK!   resourcepacks %ver%
+echo OK!   resourcepacks >> %mclog%
+echo OK!   resourcepacks >> %mcloglast%
+) else (
+echo MISSING!   resourcepacks %ver%
+echo MISSING!   resourcepacks >> %mclog%
+echo MISSING!   resourcepacks >> %mcloglast%
+)
+
 goto 1
 
 
@@ -208,6 +223,36 @@ echo MISSING!   mods >> %mcloglast%
 
 goto 1
 
+:: Pastes the version you choose, but ONLY the resourcepacks folder
+:loadRESONLY
+echo.
+
+echo Your profiles:
+dir /b resourcepacks*
+echo.
+if exist "%mcloglast%" (
+type %mcloglast%
+echo.
+)
+
+set /p ver=Load resourcepacks for version:
+echo [%date% %time%] Last loaded version: %ver% (resourcepacks) > %mcloglast%
+echo [%date% %time%] Loaded %ver% (resourcepacks) >> %mclog%
+echo.
+
+if exist "resourcepacks %ver%" (
+rd ..\resourcepacks /S /Q
+robocopy "resourcepacks %ver%" "..\resourcepacks" /MIR
+echo OK!   resourcepacks %ver%
+echo OK!   resourcepacks >> %mclog%
+echo OK!   resourcepacks >> %mcloglast%
+) else (
+echo MISSING!   resourcepacks %ver%
+echo MISSING!   resourcepacks >> %mclog%
+echo MISSING!   resourcepacks >> %mcloglast%
+)
+
+goto 1
 
 :: Saves the version to be restored when needed
 :save
@@ -253,6 +298,15 @@ echo MISSING!   mods
 echo MISSING!   mods >> %mclog%
 )
 
+if exist "..\resourcepacks" (
+robocopy "..\resourcepacks" "resourcepacks %ver%" /MIR
+echo OK!   resourcepacks
+echo OK!   resourcepacks >> %mclog%
+) else (
+echo MISSING!   resourcepacks
+echo MISSING!   resourcepacks >> %mclog%
+)
+
 goto 1
 
 
@@ -295,6 +349,24 @@ echo MISSING!   mods >> %mclog%
 
 goto 1
 
+:: Copies the resourcepacks folder for the version given
+:saveRESONLY
+echo.
+
+set /p ver=Save resourcepacks as version:
+echo [%date% %time%] Saved %ver% (resourcepacks) >> %mclog%
+echo.
+
+if exist "..\resourcepacks" (
+robocopy "..\resourcepacks" "resourcepacks %ver%" /MIR
+echo OK!   resourcepacks
+echo OK!   resourcepacks >> %mclog%
+) else (
+echo MISSING!   resourcepacks
+echo MISSING!   resourcepacks >> %mclog%
+)
+
+goto 1
 
 :: Delete an entry
 :clean
@@ -347,6 +419,15 @@ echo MISSING!   mods %ver%
 echo MISSING!   mods >> %mclog%
 )
 
+if exist "resourcepacks %ver%" (
+rd "resourcepacks %ver%" /S /Q >nul
+echo DELETED!   resourcepacks %ver%
+echo DELETED!   resourcepacks >> %mclog%
+) else (
+echo MISSING!   resourcepacks %ver%
+echo MISSING!   resourcepacks >> %mclog%
+)
+
 goto 1
 
 :: Empties mods and config folder
@@ -354,10 +435,10 @@ goto 1
 echo.
 set /p clear=Clear mods and config folder? (Y/N) : 
 if /i "%clear%"=="Y" (
-    for %%a in ("..\mods" "..\config") do (rd /S /Q "%%~a")
+    for %%a in ("..\mods" "..\config" "..\resourcepacks") do (rd /S /Q "%%~a")
     timeout /T 2 /nobreak>nul
-    md "..\mods" "..\config"
-    echo [%date% %time%] Cleared mods and config folder. >> %mclog%
+    md "..\mods" "..\config" "..\resourcepacks"
+    echo [%date% %time%] Cleared mods, config and resourcepacks folder. >> %mclog%
     goto 1
 )
 if /i not "%clear%"=="N" (
