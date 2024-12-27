@@ -432,7 +432,7 @@ goto 1
 :: Empties mods and config folder
 :clear
 echo.
-set /p clear=Clear mods and config folder? (Y/N) : 
+set /p clear=Clear mods, config and resourcepacks folder? (Y/N) : 
 if /i "%clear%"=="Y" (
     for %%a in ("..\mods" "..\config" "..\resourcepacks") do (rd /S /Q "%%~a")
     timeout /T 2 /nobreak>nul
